@@ -566,6 +566,7 @@ cc_library_static {
         arm: {
             exclude_srcs: [
                 "upstream-openbsd/lib/libc/string/strcpy.c",
+                "upstream-openbsd/lib/libc/string/memchr.c",
             ],
             neon: {
                 exclude_srcs: [
@@ -879,6 +880,7 @@ cc_library_static {
     arch: {
         arm: {
             srcs: [
+                "arch-arm/generic/bionic/memchr.S",
                 "arch-arm/generic/bionic/memcmp.S",
                 "arch-arm/generic/bionic/memcpy.S",
                 "arch-arm/generic/bionic/memset.S",
@@ -1492,7 +1494,7 @@ cc_library_static {
         },
     },
     whole_static_libs: ["libsystemproperties"],
-    cppflags: ["-Wold-style-cast"],
+    cppflags: ["-Wold-style-cast", "-DLEGACY_MMAP"],
     local_include_dirs: ["stdio"],
     include_dirs: ["bionic/libstdc++/include"],
     name: "libc_bionic_ndk",
