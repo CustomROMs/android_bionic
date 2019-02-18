@@ -2555,6 +2555,24 @@ static ElfW(Addr) get_addend(ElfW(Rel)* rel, ElfW(Addr) reloc_addr) {
 }
 #endif
 
+static inline char* reloc2name(int reloc)
+{
+        switch (reloc) {
+          case R_GENERIC_JUMP_SLOT:
+		return "R_GENERIC_JUMP_SLOT";
+          case R_GENERIC_GLOB_DAT:
+		return "R_GENERIC_GLOB_DAT";
+          case R_GENERIC_RELATIVE:
+		return "R_GENERIC_RELATIVE";
+          case R_GENERIC_IRELATIVE:
+		return "R_GENERIC_IRELATIVE";
+          case R_ARM_ABS32:
+		return "R_ARM_ABS32";
+        }
+	return "";
+
+}
+
 template<typename ElfRelIteratorT>
 bool soinfo::relocate(const VersionTracker& version_tracker, ElfRelIteratorT&& rel_iterator,
                       const soinfo_list_t& global_group, const soinfo_list_t& local_group) {
@@ -2572,7 +2590,12 @@ bool soinfo::relocate(const VersionTracker& version_tracker, ElfRelIteratorT&& r
     const char* sym_name = nullptr;
     ElfW(Addr) addend = get_addend(rel, reloc);
 
-    DEBUG("Processing \"%s\" relocation at index %zd", get_realpath(), idx);
+    DEBUG1("Processing \"%s\" relocation %d (%s) at index %zd (offset=%d, bias=%d)", get_realpath(), type, reloc2name(type), idx, rel->r_offset, load_bias);
+    if (type == R_GENERIC_RELATIVE && idx == 0 && android::base::StartsWith(
+                   std::string(get_realpath()), "/system/lib/libsec-ril.so")) {
+        continue;
+    }
+
     if (type == R_GENERIC_NONE) {
       continue;
     }

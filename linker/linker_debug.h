@@ -62,9 +62,7 @@ __LIBC_HIDDEN__ extern int g_ld_debug_verbosity;
 
 #if LINKER_DEBUG_TO_LOG
 #define _PRINTVF(v, x...) \
-    do { \
-      if (g_ld_debug_verbosity > (v)) async_safe_format_log(5-(v), "linker", x); \
-    } while (0)
+    do { } while (0)
 #else /* !LINKER_DEBUG_TO_LOG */
 #define _PRINTVF(v, x...) \
     do { \
@@ -72,15 +70,21 @@ __LIBC_HIDDEN__ extern int g_ld_debug_verbosity;
     } while (0)
 #endif /* !LINKER_DEBUG_TO_LOG */
 
+#define _PRINTVF1(v, x...) \
+    do { \
+      if (g_ld_debug_verbosity > (v)) { async_safe_format_fd(1, x); write(1, "\n", 1); } \
+    } while (0)
+
 #define PRINT(x...)          _PRINTVF(-1, x)
 #define INFO(x...)           _PRINTVF(0, x)
 #define TRACE(x...)          _PRINTVF(1, x)
 
-#if TRACE_DEBUG
-#define DEBUG(x...)          _PRINTVF(2, "DEBUG: " x)
-#else /* !TRACE_DEBUG */
+//#if TRACE_DEBUG
+//#define DEBUG(x...)          _PRINTVF(2, "DEBUG: " x)
+#define DEBUG1(x...)          _PRINTVF1(2, "DEBUG: " x)
+//#else /* !TRACE_DEBUG */
 #define DEBUG(x...)          do {} while (0)
-#endif /* TRACE_DEBUG */
+//#endif /* TRACE_DEBUG */
 
 #define TRACE_TYPE(t, x...)   do { if (DO_TRACE_##t) { TRACE(x); } } while (0)
 

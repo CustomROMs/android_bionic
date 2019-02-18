@@ -87,7 +87,6 @@ cc_binary {
         "-Wall",
         "-Wextra",
         "-Wunused",
-        "-Werror",
     ],
 
     // TODO: split out the asflags.
@@ -98,7 +97,6 @@ cc_binary {
         "-Wall",
         "-Wextra",
         "-Wunused",
-        "-Werror",
     ],
 
     product_variables: {
