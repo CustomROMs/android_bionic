@@ -101,6 +101,8 @@ pthread_internal_t* __pthread_internal_find(pthread_t thread_id, const char* cal
   }
 
   // Historically we'd return null, but
+  (void)caller;
+#if 0
   if (android_get_application_target_sdk_version() >= __ANDROID_API_O__) {
     if (thread == nullptr) {
       // This seems to be a common mistake, and it's relatively harmless because
@@ -113,5 +115,6 @@ pthread_internal_t* __pthread_internal_find(pthread_t thread_id, const char* cal
       async_safe_fatal("invalid pthread_t %p passed to %s", thread, caller);
     }
   }
+#endif
   return nullptr;
 }
